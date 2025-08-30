@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter-notebook
+  namespace: dev
+  labels:
+    app: jupyter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter
+  template:
+    metadata:
+      labels:
+        app: jupyter
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: jupyter
+        image: jupyter/base-notebook:python-3.11.6
+        command: ["start-notebook.sh"]
+        args:
+        - "--ServerApp.allow_origin=*"
+        - "--ServerApp.disable_check_xsrf=True"
+        - "--ServerApp.token=''"
+        ports:
+          - containerPort: 8888
+        volumeMounts:
+        - name: jupyter-storage
+          mountPath: /home/jovyan/work
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+      volumes:
+      - name: jupyter-storage
+        persistentVolumeClaim:
+          claimName: jupyter-pvc

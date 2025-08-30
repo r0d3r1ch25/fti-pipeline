@@ -1,0 +1,6 @@
+resources:
+  - namespace.yaml
+  - deploy/jupyter-deployment.yaml
+  - svc/jupyter-service.yaml
+  - pvc/jupyter-pvc.yaml
+  - pv/jupyter-pv.yaml
